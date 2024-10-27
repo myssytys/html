@@ -56,13 +56,13 @@ const myParticleSystem = new BABYLON.ParticleSystem("particles", 1000, scene); /
 var pointEmitter = myParticleSystem.createPointEmitter(new BABYLON.Vector3(-7, 8, 3), new BABYLON.Vector3(7, 8, -3));
 
 myParticleSystem.particleTexture = new BABYLON.Texture("flare.png", scene);
-myParticleSystem.textureMask = new BABYLON.Color4(0.1, 0.8, 0.8, 1.0);
+myParticleSystem.textureMask = new BABYLON.Color4(0.8, 0.8, 0.8, 1.0);
 
 //myParticleSystem.emitter = pointEmitter;
 
 myParticleSystem.emitter = new BABYLON.Vector3(0, 0, 0); // the starting object, the emitter
-myParticleSystem.minEmitBox = new BABYLON.Vector3(-0.5, -0.5, -0.5); // Starting all from
-myParticleSystem.maxEmitBox = new BABYLON.Vector3(0.5, 0.5, 0.5); // To...
+myParticleSystem.minEmitBox = new BABYLON.Vector3(-1.5, -1.5, -1.5); // Starting all from
+myParticleSystem.maxEmitBox = new BABYLON.Vector3(1.5, 1.5, 1.5); // To...
 
 myParticleSystem.minSize = 0.1;
 myParticleSystem.maxSize = 0.5;
