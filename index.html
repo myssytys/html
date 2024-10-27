@@ -35,14 +35,53 @@
       const engine = new BABYLON.Engine(canvas, true); // Generate the BABYLON 3D engine
 
     const createScene = () => {
-    const scene = new BABYLON.Scene(engine);
+    
+// Create a scene and a camera
+const scene = new BABYLON.Scene();
+const camera = new BABYLON.ArcRotateCamera("camera1", 0, 0, 100, new BABYLON.Vector3(0, 0, 0), scene);
+camera.attachControl(document.getElementById("canvas"), true);
 
-    const camera = new BABYLON.ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 2.5, 3, new BABYLON.Vector3(0, 0, 0));
-    camera.attachControl(canvas, true);
+// Create a light source
+const light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
 
-    const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0));
+// Create a spiral galaxy using a meshbuilder
+const galaxy = new BABYLON.MeshBuilder.CreateSphere("galaxy", { diameter: 100 }, scene);
+galaxy.position.z = -50; // Move the galaxy back
+galaxy.textureMask = new BABYLON.Color4(0.1, 0.1, 0.1, 0.1);
 
-    const box = BABYLON.MeshBuilder.CreateBox("box", {});
+scene.clearColor = new BABYLON.Color3(0.0, 0.0, 0.0);
+
+const myParticleSystem = new BABYLON.ParticleSystem("particles", 1000, scene); //
+
+var pointEmitter = myParticleSystem.createPointEmitter(new BABYLON.Vector3(-7, 8, 3), new BABYLON.Vector3(7, 8, -3));
+
+myParticleSystem.particleTexture = new BABYLON.Texture("flare.png", scene);
+myParticleSystem.textureMask = new BABYLON.Color4(0.1, 0.8, 0.8, 1.0);
+
+myParticleSystem.emitter = pointEmitter;
+
+myParticleSystem.minSize = 0.1;
+myParticleSystem.maxSize = 0.5;
+
+myParticleSystem.minScaleX = 0.1;
+myParticleSystem.maxScaleX = 0.5;
+
+myParticleSystem.minScaleY = 0.2;
+myParticleSystem.maxScaleY = 0.4;
+
+myParticleSystem.minEmitPower = 1;
+myParticleSystem.maxEmitPower = 3;
+
+myParticleSystem.minAngularSpeed = 0;
+myParticleSystem.maxAngularSpeed = Math.PI;
+
+myParticleSystem.translationPivot = new BABYLON.Vector2(2, 2);
+
+myParticleSystem.color1 = new BABYLON.Color4(0.7, 0.8, 1.0, 1.0);
+myParticleSystem.color2 = new BABYLON.Color4(0.2, 0.5, 1.0, 1.0);
+myParticleSystem.colorDead = new BABYLON.Color4(0, 0, 0.2, 0.0);
+
+myParticleSystem.start(); //Starts the emission of particles
 
     return scene;
 }
