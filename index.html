@@ -45,9 +45,9 @@ camera.attachControl(document.getElementById("canvas"), true);
 const light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
 
 // Create a spiral galaxy using a meshbuilder
-/*const galaxy = new BABYLON.MeshBuilder.CreateSphere("galaxy", { diameter: 100 }, scene);
+const galaxy = new BABYLON.MeshBuilder.CreateSphere("galaxy", { diameter: 100 }, scene);
 galaxy.position.z = -50; // Move the galaxy back
-galaxy.textureMask = new BABYLON.Color4(0.1, 0.1, 0.1, 0.1);*/
+galaxy.textureMask = new BABYLON.Color4(0.1, 0.1, 0.1, 0.1);
 
 scene.clearColor = new BABYLON.Color3(0.0, 0.0, 0.0);
 
