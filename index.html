@@ -42,18 +42,18 @@ const camera = new BABYLON.ArcRotateCamera("camera1", 0, 0, 100, new BABYLON.Vec
 camera.attachControl(document.getElementById("canvas"), true);
 
 // Create a light source
-const light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
+//const light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
 
 // Create a spiral galaxy using a meshbuilder
 const galaxy = new BABYLON.MeshBuilder.CreateSphere("galaxy", { diameter: 100 }, scene);
-galaxy.position.z = -50; // Move the galaxy back
-galaxy.textureMask = new BABYLON.Color4(0.1, 0.1, 0.1, 0.1);
+//galaxy.position.z = -50; // Move the galaxy back
+galaxy.textureMask = new BABYLON.Color4(0.0, 0.0, 0.0, 1.0);
 
 scene.clearColor = new BABYLON.Color3(0.0, 0.0, 0.0);
 
-const myParticleSystem = new BABYLON.ParticleSystem("particles", 1000, scene); //
+const myParticleSystem = new BABYLON.ParticleSystem("particles", 10000, scene); //
 
-var pointEmitter = myParticleSystem.createPointEmitter(new BABYLON.Vector3(-7, 8, 3), new BABYLON.Vector3(7, 8, -3));
+myParticleSystem.createPointEmitter(new BABYLON.Vector3(-7, 8, 3), new BABYLON.Vector3(7, 8, -3));
 
 myParticleSystem.particleTexture = new BABYLON.Texture("flare.png", scene);
 myParticleSystem.textureMask = new BABYLON.Color4(0.8, 0.8, 0.8, 1.0);
@@ -61,31 +61,31 @@ myParticleSystem.textureMask = new BABYLON.Color4(0.8, 0.8, 0.8, 1.0);
 //myParticleSystem.emitter = pointEmitter;
 
 myParticleSystem.emitter = new BABYLON.Vector3(0, 0, 0); // the starting object, the emitter
-myParticleSystem.minEmitBox = new BABYLON.Vector3(-1.5, -1.5, -1.5); // Starting all from
-myParticleSystem.maxEmitBox = new BABYLON.Vector3(1.5, 1.5, 1.5); // To...
+myParticleSystem.minEmitBox = new BABYLON.Vector3(-1.5*10, -1.5*10, -1.5*10); // Starting all from
+myParticleSystem.maxEmitBox = new BABYLON.Vector3(1.5*10, 1.5*10, 1.5*10); // To...
 
-myParticleSystem.minSize = 0.1;
-myParticleSystem.maxSize = 0.5;
+myParticleSystem.minSize = -1.0*10;
+myParticleSystem.maxSize = 1.0*10;
 
-myParticleSystem.minScaleX = 0.1;
-myParticleSystem.maxScaleX = 0.5;
+/*myParticleSystem.minScaleX = -0.5*10;
+myParticleSystem.maxScaleX = 0.5*10;
 
-myParticleSystem.minScaleY = 0.2;
-myParticleSystem.maxScaleY = 0.4;
+myParticleSystem.minScaleY = -0.5*10;
+myParticleSystem.maxScaleY = 0.5*10;*/
 
-myParticleSystem.minEmitPower = 1;
-myParticleSystem.maxEmitPower = 3;
+myParticleSystem.minEmitPower = 1*10;
+myParticleSystem.maxEmitPower = 3*10;
 
-myParticleSystem.minAngularSpeed = 0;
-myParticleSystem.maxAngularSpeed = Math.PI;
+//myParticleSystem.minAngularSpeed = 0;
+//myParticleSystem.maxAngularSpeed = Math.PI;
 
-myParticleSystem.translationPivot = new BABYLON.Vector2(2, 2);
+myParticleSystem.translationPivot = new BABYLON.Vector2(0, 0);
 
 myParticleSystem.emitRate = 1000;
 
 myParticleSystem.color1 = new BABYLON.Color4(0.7, 0.8, 1.0, 1.0);
 myParticleSystem.color2 = new BABYLON.Color4(0.2, 0.5, 1.0, 1.0);
-//myParticleSystem.colorDead = new BABYLON.Color4(0, 0, 0.2, 0.0);
+myParticleSystem.colorDead = new BABYLON.Color4(0, 0, 0.2, 0.0);
 
 myParticleSystem.start(); //Starts the emission of particles
 
