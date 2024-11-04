@@ -51,7 +51,7 @@ galaxy.textureMask = new BABYLON.Color4(0.0, 0.0, 0.0, 1.0);
 
 scene.clearColor = new BABYLON.Color3(0.0, 0.0, 0.0);
 
-const myParticleSystem = new BABYLON.ParticleSystem("particles", 10000, scene); //
+const myParticleSystem = new BABYLON.ParticleSystem("particles", 100000, scene); //
 
 myParticleSystem.createPointEmitter(new BABYLON.Vector3(-7, 8, 3), new BABYLON.Vector3(7, 8, -3));
 
@@ -64,8 +64,8 @@ myParticleSystem.emitter = new BABYLON.Vector3(0, 0, 0); // the starting object,
 myParticleSystem.minEmitBox = new BABYLON.Vector3(-1.5*10, -1.5*10, -1.5*10); // Starting all from
 myParticleSystem.maxEmitBox = new BABYLON.Vector3(1.5*10, 1.5*10, 1.5*10); // To...
 
-myParticleSystem.minSize = -1.0*10;
-myParticleSystem.maxSize = 1.0*10;
+myParticleSystem.minSize = 0;
+myParticleSystem.maxSize = 20;
 
 /*myParticleSystem.minScaleX = -0.5*10;
 myParticleSystem.maxScaleX = 0.5*10;
@@ -88,7 +88,8 @@ myParticleSystem.translationPivot = new BABYLON.Vector2(0, 0);
 myParticleSystem.emitRate = 1000;
 
 myParticleSystem.color1 = new BABYLON.Color4(0.7, 0.8, 1.0, 1.0);
-myParticleSystem.color2 = new BABYLON.Color4(0.2, 0.5, 1.0, 1.0);
+myParticleSystem.color2 = new BABYLON.Color4(0.2, 0.5, 0.5, 1.0);
+myParticleSystem.color3 = new BABYLON.Color4(0.2, 0.5, 1.0, 1.0);
 myParticleSystem.colorDead = new BABYLON.Color4(0, 0, 0.2, 0.0);
 
 myParticleSystem.start(); //Starts the emission of particles
