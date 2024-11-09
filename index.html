@@ -24,6 +24,7 @@
     <script src="https://cdn.babylonjs.com/babylon.js"></script>
     <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
     <script src="https://code.jquery.com/pep/0.4.3/pep.js"></script>
+
   </head>
 
   <body>
@@ -31,6 +32,123 @@
     <!-- touch-action="none" for best results from PEP -->
 
     <script>
+
+class SuperEllipsoid {
+    constructor(name, sampling, yRoundness, xRoundness, size) {
+        this.mesh = this.createSuperEllipsoid(sampling, yRoundness, xRoundness, size);
+        this.name = name;
+        this.mesh.name = name;
+    }
+
+    sampleSuperEllipsoid(phi, beta, n1, n2, scaleX, scaleY, scaleZ) {
+        var cosPhi = Math.cos(phi);
+        var cosBeta = Math.cos(beta);
+        var sinPhi = Math.sin(phi);
+        var sinBeta = Math.sin(beta);
+        var vertex = new BABYLON.Vector3();
+        vertex.x = scaleX * Math.sign(cosPhi) * Math.pow(Math.abs(cosPhi), n1) * Math.sign(cosBeta) * Math.pow(Math.abs(cosBeta), n2);
+        vertex.z = scaleY * Math.sign(cosPhi) * Math.pow(Math.abs(cosPhi), n1) * Math.sign(sinBeta) * Math.pow(Math.abs(sinBeta), n2);
+        vertex.y = scaleZ * Math.sign(sinPhi) * Math.pow(Math.abs(sinPhi), n1);
+        return vertex;
+    }
+
+    calculateNormal(phi, beta, n1, n2, scaleX, scaleY, scaleZ) {
+        var normal = new BABYLON.Vector3();
+        var cosPhi = Math.cos(phi);
+        var cosBeta = Math.cos(beta);
+        var sinPhi = Math.sin(phi);
+        var sinBeta = Math.sin(beta);
+        normal.x = Math.sign(cosPhi) * Math.pow(Math.abs(cosPhi), 2 - n1) * Math.sign(cosBeta) * Math.pow(Math.abs(cosBeta), 2 - n2) / scaleX;
+        normal.z = Math.sign(cosPhi) * Math.pow(Math.abs(cosPhi), 2 - n1) * Math.sign(sinBeta) * Math.pow(Math.abs(sinBeta), 2 - n2) / scaleY;
+        normal.y = Math.sign(sinPhi) * Math.pow(Math.abs(sinPhi), 2 - n1) / scaleZ;
+        normal = normal.normalize();
+        return normal;
+    }
+    
+    //-----------------------------------------------------
+    createSuperEllipsoid(samples, n1, n2, scale, uvScale) {
+        uvScale = uvScale || 1;
+        var mesh = new BABYLON.Mesh('mesh');
+        var phi = 0.0, phi2 = 0.0, beta = 0.0;
+        var dB = Math.PI * 2.0 / samples;
+        var dP = Math.PI * 2.0 / samples;
+        phi = -Math.PI / 2;
+        var vertices = [];
+        var normals = [];
+        var uvs = [];
+
+        const addUV = (beta, phi) => {
+            const v = phi / (2 * Math.PI);
+            const u = (beta + Math.PI) / (2 * Math.PI);
+            uvs.push(u * uvScale, v * uvScale);
+        };
+
+        for (var j = 0; j <= samples / 2; j++) {
+            beta = -Math.PI;
+
+            for (var i = 0; i <= samples; i++) {
+                vertices.push(this.sampleSuperEllipsoid(phi, beta, n1, n2, scale, scale, scale));
+                normals.push(this.calculateNormal(phi, beta, n1, n2, scale, scale, scale));
+                addUV(beta, phi);
+                vertices.push(this.sampleSuperEllipsoid(phi + dP, beta, n1, n2, scale, scale, scale));
+                normals.push(this.calculateNormal(phi + dP, beta, n1, n2, scale, scale, scale));
+                addUV(beta, phi + dP);
+                vertices.push(this.sampleSuperEllipsoid(phi + dP, beta + dB, n1, n2, scale, scale, scale));
+                normals.push(this.calculateNormal(phi + dP, beta + dB, n1, n2, scale, scale, scale));
+                addUV(beta + dB, phi + dP);
+
+                vertices.push(this.sampleSuperEllipsoid(phi, beta, n1, n2, scale, scale, scale));
+                normals.push(this.calculateNormal(phi, beta, n1, n2, scale, scale, scale));
+                addUV(beta, phi);
+                vertices.push(this.sampleSuperEllipsoid(phi + dP, beta + dB, n1, n2, scale, scale, scale));
+                normals.push(this.calculateNormal(phi + dP, beta + dB, n1, n2, scale, scale, scale));
+                addUV(beta + dB, phi + dP);
+                vertices.push(this.sampleSuperEllipsoid(phi, beta + dB, n1, n2, scale, scale, scale));
+                normals.push(this.calculateNormal(phi, beta + dB, n1, n2, scale, scale, scale));
+                addUV(beta + dB, phi);
+
+                beta += dB;
+            }
+            phi += dP;
+        }
+
+        var shapeReturned = new BABYLON.VertexData();
+        shapeReturned.positions = [];
+        shapeReturned.normals = [];
+        shapeReturned.indices = [];
+        shapeReturned.uvs = uvs;
+        var indice = 0;
+
+        let c = 0;
+        for (var i = 0; i < vertices.length; i++) {
+            if (c === 1) {
+                shapeReturned.indices.push(indice + 1);
+            } else if (c === 2) {
+                shapeReturned.indices.push(indice - 1);
+            } else {
+                shapeReturned.indices.push(indice);
+            }
+            indice++;
+            c++;
+            if (c === 3) {
+                c = 0;
+            }
+
+            shapeReturned.positions.push(vertices[i].x);
+            shapeReturned.positions.push(vertices[i].y);
+            shapeReturned.positions.push(vertices[i].z);
+            shapeReturned.normals.push(normals[i].x);
+            shapeReturned.normals.push(normals[i].y);
+            shapeReturned.normals.push(normals[i].z);
+        }
+
+        shapeReturned.applyToMesh(mesh);
+        return mesh;
+      }}
+
+
+//    import { Inspector } from '@babylonjs/inspector';
+
       const canvas = document.getElementById("renderCanvas"); // Get the canvas element
       const engine = new BABYLON.Engine(canvas, true); // Generate the BABYLON 3D engine
 
@@ -38,6 +156,7 @@
     
 // Create a scene and a camera
 const scene = new BABYLON.Scene();
+//scene.debugLayer.show();
 const camera = new BABYLON.ArcRotateCamera("camera1", 0, 0, 100, new BABYLON.Vector3(0, 0, 0), scene);
 camera.attachControl(document.getElementById("canvas"), true);
 
@@ -51,23 +170,31 @@ galaxy.textureMask = new BABYLON.Color4(0.0, 0.0, 0.0, 1.0);
 
 scene.clearColor = new BABYLON.Color3(0.0, 0.0, 0.0);
 
-const myParticleSystem = new BABYLON.ParticleSystem("particles", 100000, scene); //
+const myParticleSystem = new BABYLON.ParticleSystem("particles", 100000, scene); 
 
 //myParticleSystem.createPointEmitter(new BABYLON.Vector3(-7, 8, 3), new BABYLON.Vector3(7, 8, -3));
 
-myParticleSystem.createSphereEmitter(10, 100, 0);
+
+ const mesh = new SuperEllipsoid("superello", 100, 1, 1, 300);
+ superello = scene.getMeshByName("superello");
+ superello.scaling.y = .66;
+
+const meshEmitter = new BABYLON.MeshParticleEmitter();
+meshEmitter.mesh = superello;
+myParticleSystem.particleEmitterType = meshEmitter;
+ 
 
 myParticleSystem.particleTexture = new BABYLON.Texture("flare.png", scene);
 myParticleSystem.textureMask = new BABYLON.Color4(0.8, 0.8, 0.8, 1.0);
 
-//myParticleSystem.emitter = pointEmitter;
+//myParticleSystem.emitter = meshEmitter;
 
-myParticleSystem.emitter = new BABYLON.Vector3(0, 0, 0); // the starting object, the emitter
+/*myParticleSystem.emitter = new BABYLON.Vector3(0, 0, 0); // the starting object, the emitter
 myParticleSystem.minEmitBox = new BABYLON.Vector3(-1.5*10, -1.5*10, -1.5*10); // Starting all from
-myParticleSystem.maxEmitBox = new BABYLON.Vector3(1.5*10, 1.5*10, 1.5*10); // To...
+myParticleSystem.maxEmitBox = new BABYLON.Vector3(1.5*10, 1.5*10, 1.5*10); // To...*/
 
 myParticleSystem.minSize = 0.1;
-myParticleSystem.maxSize = 20;
+myParticleSystem.maxSize = 10;
 
 //myParticleSystem.minEmitPower = 1*10;
 //myParticleSystem.maxEmitPower = 3*10;
@@ -93,6 +220,8 @@ myParticleSystem.colorDead = new BABYLON.Color4(0, 0, 0.2, 0.0);
 
 myParticleSystem.start(); //Starts the emission of particles
 
+
+
     return scene;
 }
 
@@ -100,8 +229,11 @@ myParticleSystem.start(); //Starts the emission of particles
 
       const scene = createScene(); //Call the createScene function
 
+      //Inspector.Show(scene, {});
+
       // Register a render loop to repeatedly render the scene
       engine.runRenderLoop(function () {
+
         scene.render();
       });
 
