@@ -53,7 +53,9 @@ scene.clearColor = new BABYLON.Color3(0.0, 0.0, 0.0);
 
 const myParticleSystem = new BABYLON.ParticleSystem("particles", 100000, scene); //
 
-myParticleSystem.createPointEmitter(new BABYLON.Vector3(-7, 8, 3), new BABYLON.Vector3(7, 8, -3));
+//myParticleSystem.createPointEmitter(new BABYLON.Vector3(-7, 8, 3), new BABYLON.Vector3(7, 8, -3));
+
+myParticleSystem.createSphereEmitter(10, 100, 0);
 
 myParticleSystem.particleTexture = new BABYLON.Texture("flare.png", scene);
 myParticleSystem.textureMask = new BABYLON.Color4(0.8, 0.8, 0.8, 1.0);
@@ -64,17 +66,14 @@ myParticleSystem.emitter = new BABYLON.Vector3(0, 0, 0); // the starting object,
 myParticleSystem.minEmitBox = new BABYLON.Vector3(-1.5*10, -1.5*10, -1.5*10); // Starting all from
 myParticleSystem.maxEmitBox = new BABYLON.Vector3(1.5*10, 1.5*10, 1.5*10); // To...
 
-myParticleSystem.minSize = 0;
+myParticleSystem.minSize = 0.1;
 myParticleSystem.maxSize = 20;
 
-/*myParticleSystem.minScaleX = -0.5*10;
-myParticleSystem.maxScaleX = 0.5*10;
+//myParticleSystem.minEmitPower = 1*10;
+//myParticleSystem.maxEmitPower = 3*10;
 
-myParticleSystem.minScaleY = -0.5*10;
-myParticleSystem.maxScaleY = 0.5*10;*/
-
-myParticleSystem.minEmitPower = 1*10;
-myParticleSystem.maxEmitPower = 3*10;
+myParticleSystem.minEmitPower = 10;
+myParticleSystem.maxEmitPower = 50;
 
 myParticleSystem.minLifeTime = 10;
 myParticleSystem.maxLifeTime = 10;
